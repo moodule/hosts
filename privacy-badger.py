@@ -14,7 +14,7 @@ import json
 from typing import List
 
 #####################################################################
-#
+# EXTRACT
 #####################################################################
 
 def extract_blocked_hosts(
@@ -38,3 +38,26 @@ def extract_blocked_hosts(
         for __domain, __action
         in __structured_data.get("action_map", {}).items()
         if __action["heuristicAction"] == u"block"]
+
+#####################################################################
+# EXPORT
+#####################################################################
+
+def format_domain_list_in_dns_hosts_style(
+        domains: List[str]) -> List[str]:
+    """
+    Format a list of domains as a DNS hosts file.
+
+    Parameters
+    ----------
+    domains: list.
+        The list of domains to format.
+
+    Returns
+    -------
+    out: lsit.
+        A list of str lines ready to be written in a hosts file.
+    """
+    return [
+        "0.0.0.0 {}\n".format(__domain)
+        for __domain in domains]
