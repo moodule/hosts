@@ -11,13 +11,14 @@ Pipe the domain blocked by your privacy-badger.
 from __future__ import division, print_function, absolute_import
 
 import json
+from typing import List
 
 #####################################################################
 #
 #####################################################################
 
 def extract_blocked_hosts(
-        data: str) -> list:
+        data: str) -> List[str]:
     """
     Extract the blocked hosts from a privacy-badger export
 
