@@ -13,6 +13,8 @@ from __future__ import division, print_function, absolute_import
 import json
 from typing import List
 
+from _typing import DnsPolicy
+
 #####################################################################
 # POLICY
 #####################################################################
@@ -46,6 +48,31 @@ def get_final_policy(
         else:
             return action_map["userAction"]
 
+def is_policy(
+        action_map: dict,
+        policy: DnsPolicy = u"block",
+        user_precedence: bool = False) -> bool:
+    """
+    Check for a specific policy on a domain.
+
+    Parameters
+    ----------
+    action_map: dict.
+        The policies of both the user and the badger, for the domain.
+    policy: DnsPolicy.
+        The policy to check agains.
+    user_precedence: bool.
+        Does the user have the final word for the policy?
+
+    Returns
+    -------
+    out: bool.
+        True if the final policy for the given domain matches the input.
+    """
+    return (policy == get_final_policy(
+        action_map,
+        user_precedence))
+
 #####################################################################
 # EXTRACT
 #####################################################################
@@ -71,7 +98,7 @@ def extract_blocked_hosts(
         __domain
         for __domain, __action_map
         in __structured_data.get("action_map", {}).items()
-        if is_policy_block(__action_map, user_precedence)]
+        if is_policy(__action_map, u"block", user_precedence)]
 
 #####################################################################
 # EXPORT
