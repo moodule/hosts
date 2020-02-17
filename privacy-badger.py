@@ -14,10 +14,10 @@ import json
 from typing import List
 
 #####################################################################
-#
+# POLICY
 #####################################################################
 
-def is_policy_block(
+def get_final_policy(
         action_map: dict,
         user_precedence: bool = False) -> str:
     """
@@ -32,20 +32,19 @@ def is_policy_block(
 
     Returns
     -------
-    out: bool.
-        True if the domain is blocked.
+    out: str.
+        The final policy for the domain.
     """
-    return (
-        (not user_precedence and (
-            action_map["heuristicAction"] == u"block"
-            or (
-                action_map["heuristicAction"] == u""
-                and action_map["userAction"] == u"block")))
-        or (user_precedence and (
-            action_map["userAction"] == u"block"
-            or (
-                action_map["userAction"] == u""
-                and action_map["heuristicAction"] == u"block"))))
+    if user_precedence:
+        if action_map["userAction"]:
+            return action_map["userAction"]
+        else:
+            return action_map["heuristicAction"]
+    else:
+        if action_map["heuristicAction"]:
+            return action_map["heuristicAction"]
+        else:
+            return action_map["userAction"]
 
 #####################################################################
 # EXTRACT
