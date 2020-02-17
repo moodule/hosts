@@ -77,49 +77,47 @@ def is_policy(
 #####################################################################
 
 def extract_blacklisted_domains(
-        data: str,
+        data: dict,
         user_precedence: bool = False) -> List[str]:
     """
     Extract the blocked hosts from a privacy-badger export
 
     Parameters
     ----------
-    data: str.
-        The data exported from Privacy Badger, as a json string.
+    data: dict.
+        The data exported from Privacy Badger, as a json dict.
 
     Returns
     -------
     out: list.
         The list of blocked domains.
     """
-    __structured_data = json.loads(data)
     return [
         __domain
         for __domain, __action_map
-        in __structured_data.get("action_map", {}).items()
+        in data.get("action_map", {}).items()
         if is_policy(__action_map, u"block", user_precedence)]
 
 def extract_whitelisted_domains(
-        data: str,
+        data: dict,
         user_precedence: bool = False) -> List[str]:
     """
     Extract the blocked hosts from a privacy-badger export
 
     Parameters
     ----------
-    data: str.
-        The data exported from Privacy Badger, as a json string.
+    data: dict.
+        The data exported from Privacy Badger, as a json dict.
 
     Returns
     -------
     out: list.
         The list of blocked domains.
     """
-    __structured_data = json.loads(data)
     return [
         __domain
         for __domain, __action_map
-        in __structured_data.get("action_map", {}).items()
+        in data.get("action_map", {}).items()
         if is_policy(__action_map, u"allow", user_precedence)]
 
 #####################################################################

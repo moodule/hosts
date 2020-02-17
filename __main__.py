@@ -23,9 +23,12 @@ if __name__ == "__main__":
         # read the badger's export
         __raw_data = __data_file.readline()
 
+        # parse the serialized data
+        __structured_data = json.loads(__raw_data)
+
         # retrieve only the blocked domains
         __hosts_blacklist = extract_blacklisted_domains(
-            data=__raw_data,
+            data=__structured_data,
             user_precedence=False)  # trust the badger's heuristic
             
         # write as a DNS hosts file
