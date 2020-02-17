@@ -10,7 +10,6 @@ Pipe the domain blocked by your privacy-badger.
 
 from __future__ import division, print_function, absolute_import
 
-import json
 from typing import List
 
 from _typing import DnsPolicy
@@ -77,7 +76,7 @@ def is_policy(
 # EXTRACT
 #####################################################################
 
-def extract_blocked_hosts(
+def extract_blacklisted_domains(
         data: str,
         user_precedence: bool = False) -> List[str]:
     """
@@ -86,7 +85,7 @@ def extract_blocked_hosts(
     Parameters
     ----------
     data: str.
-        The exported data, as a json string.
+        The data exported from Privacy Badger, as a json string.
 
     Returns
     -------
@@ -100,11 +99,34 @@ def extract_blocked_hosts(
         in __structured_data.get("action_map", {}).items()
         if is_policy(__action_map, u"block", user_precedence)]
 
+def extract_whitelisted_domains(
+        data: str,
+        user_precedence: bool = False) -> List[str]:
+    """
+    Extract the blocked hosts from a privacy-badger export
+
+    Parameters
+    ----------
+    data: str.
+        The data exported from Privacy Badger, as a json string.
+
+    Returns
+    -------
+    out: list.
+        The list of blocked domains.
+    """
+    __structured_data = json.loads(data)
+    return [
+        __domain
+        for __domain, __action_map
+        in __structured_data.get("action_map", {}).items()
+        if is_policy(__action_map, u"allow", user_precedence)]
+
 #####################################################################
 # EXPORT
 #####################################################################
 
-def format_domain_list_in_dns_hosts_style(
+def format_as_hosts_blacklist(
         domains: List[str]) -> List[str]:
     """
     Format a list of domains as a DNS hosts file.
@@ -116,7 +138,7 @@ def format_domain_list_in_dns_hosts_style(
 
     Returns
     -------
-    out: lsit.
+    out: list.
         A list of str lines ready to be written in a hosts file.
     """
     return [
