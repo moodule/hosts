@@ -14,11 +14,46 @@ import json
 from typing import List
 
 #####################################################################
+#
+#####################################################################
+
+def is_policy_block(
+        action_map: dict,
+        user_precedence: bool = False) -> str:
+    """
+    Gives the final policy for a domain.
+
+    Parameters
+    ----------
+    action_map: dict.
+        The policies of both the user and the badger, for the domain.
+    user_precedence: bool.
+        Does the user have the final word for the policy?
+
+    Returns
+    -------
+    out: bool.
+        True if the domain is blocked.
+    """
+    return (
+        (not user_precedence and (
+            action_map["heuristicAction"] == u"block"
+            or (
+                action_map["heuristicAction"] == u""
+                and action_map["userAction"] == u"block")))
+        or (user_precedence and (
+            action_map["userAction"] == u"block"
+            or (
+                action_map["userAction"] == u""
+                and action_map["heuristicAction"] == u"block"))))
+
+#####################################################################
 # EXTRACT
 #####################################################################
 
 def extract_blocked_hosts(
-        data: str) -> List[str]:
+        data: str,
+        user_precedence: bool = False) -> List[str]:
     """
     Extract the blocked hosts from a privacy-badger export
 
@@ -35,9 +70,9 @@ def extract_blocked_hosts(
     __structured_data = json.loads(data)
     return [
         __domain
-        for __domain, __action
+        for __domain, __action_map
         in __structured_data.get("action_map", {}).items()
-        if __action["heuristicAction"] == u"block"]
+        if is_policy_block(__action_map, user_precedence)]
 
 #####################################################################
 # EXPORT
