@@ -12,21 +12,21 @@ from __future__ import division, print_function, absolute_import
 
 from typing import List
 
-from _typing import DnsPolicy
+from _typing import DnsPolicy, PrivacyBadgerActionMap
 
 #####################################################################
 # POLICY
 #####################################################################
 
 def get_final_policy(
-        action_map: dict,
+        action_map: PrivacyBadgerActionMap,
         user_precedence: bool = False) -> str:
     """
     Gives the final policy for a domain.
 
     Parameters
     ----------
-    action_map: dict.
+    action_map: PrivacyBadgerActionMap.
         The policies of both the user and the badger, for the domain.
     user_precedence: bool.
         Does the user have the final word for the policy?
@@ -48,7 +48,7 @@ def get_final_policy(
             return action_map["userAction"]
 
 def is_policy(
-        action_map: dict,
+        action_map: PrivacyBadgerActionMap,
         policy: DnsPolicy = u"block",
         user_precedence: bool = False) -> bool:
     """
@@ -56,7 +56,7 @@ def is_policy(
 
     Parameters
     ----------
-    action_map: dict.
+    action_map: PrivacyBadgerActionMap.
         The policies of both the user and the badger, for the domain.
     policy: DnsPolicy.
         The policy to check agains.
